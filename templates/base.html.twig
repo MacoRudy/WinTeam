@@ -1,12 +1,182 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}WinTeam{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<!doctype html>
+<html lang="fr">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Css -->
+    <link rel="stylesheet" href="{{ asset('CSS/style.css') }}">
+    {% block accueilCss %}{% endblock %}
+    {% block accueilCarouselCss %}{% endblock %}
+    {% block connexionCss %}{% endblock %}
+    {% block listeAdminCss %}{% endblock %}
+    {% block campusVilleCss %}{% endblock %}
+    {% block creationSortieCss %}{% endblock %}
+    {% block annulationSortieCss %}{% endblock %}
+    {% block formRegistratinoCss %}{% endblock %}
+    {% block editProfilCss %}{% endblock %}
+    {% block editFormCss %}{% endblock %}
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <title>{% block title %} Sortir | {% endblock %}</title>
+</head>
+<body>
+{% for label, messages in app.flashes(['success', 'warning', 'danger']) %}
+    {% for message in messages %}
+        <p class="alert-{{ label }}">{{ message }}</p>
+    {% endfor %}
+{% endfor %}
+<div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="d-none d-lg-block" id="sidebar-wrapper">
+        <div class="sidebar-heading text-center">SORTIR.COM</div>
+        <div class="list-group list-group-flush">
+            <ul class="navbar-nav">
+                {% if app.user %}
+                    <li class="nav-item mb-3 mt-3">
+                        {% for unrole in app.user.roles %}
+                            <p>Bienvenue {{ app.user.username }}<br>{{ unrole }}</p>
+                        {% endfor %}
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('home') }}">Accueil <span class="sr-only">(current)</span></a>
+                    </li>
+                    <hr>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('accueil') }}">Les sorties</a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}" title="Disconnect">Se déconnecter</a>
+                    </li>
+                    <hr>
+                {% if (is_granted("ROLE_ADMIN")) %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('compte') }}">Tous les profils</a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('detail', {'id': app.user.id}) }}">Mon profil</a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}" title="register">Enregistrer un utilisateur</a>
+                    </li>
+                    <hr>
+                {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ path('detail', {'id': app.user.id}) }}">Mon profil</a>
+                    </li>
+                    <hr>
+                {% endif %}
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}" title="Connect">Se Connecter</a>
+                    </li>
+                    <hr>
+                {% endif %}
+
+                {% if (is_granted("ROLE_ADMIN")) %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('cities_villes') }}" title="ville">Ville</a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('cities_campus') }}" title="campus">Campus</a>
+                    </li>
+                    <hr>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+        <nav class="navbar navbar-expand-lg navbar-light navbarSortir d-lg-none">
+            <div class="sidebar-heading text-center">SORTIR.COM</div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    {% if app.user %}
+                        <li class="nav-item mb-3 mt-3">
+                            {% for unrole in app.user.roles %}
+                                <p>Bienvenue {{ app.user.username }}<br>{{ unrole }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('home') }}">Accueil <span class="sr-only">(current)</span></a>
+                        </li>
+                        <hr>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('accueil') }}">Les sorties</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_logout') }}" title="Disconnect">Se déconnecter</a>
+                        </li>
+                        <hr>
+                    {% if (is_granted("ROLE_ADMIN")) %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('compte') }}">Tous les profils</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_register') }}" title="register">Enregistrer un utilisateur</a>
+                        </li>
+                        <hr>
+                    {% else %}
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ path('detail', {'id': app.user.id}) }}">Mon profil</a>
+                        </li>
+                        <hr>
+                    {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}" title="Connect">Se Connecter</a>
+                        </li>
+                        <hr>
+                    {% endif %}
+                    {% if (is_granted("ROLE_ADMIN")) %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('cities_villes') }}" title="ville">Ville</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('cities_campus') }}" title="campus">Campus</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <main>
+                {% block main %}{% endblock %}
+            </main>
+            <footer></footer>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+<!-- Optional JavaScript -->
+{% block javascripts %}{% endblock %}
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
 </html>

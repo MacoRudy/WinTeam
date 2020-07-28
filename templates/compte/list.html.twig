@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block accueilCarouselCss %}
+    <link rel="stylesheet" href="{{ asset('CSS/listeAdmin.css') }}">
+{% endblock %}
+
+{% block title %}{{ parent() }}{% endblock %}
+
+{% block main %}
+    <h1 class="text-center" id="utilisateurs">Les utilisateurs</h1>
+    <div class="row">
+        {% for accounts in account %}
+            <div class="d-flex justify-content-around col-sm-6 col-lg-4">
+                <div class="cardUtilisateur text-center">
+                    <div class="photo">
+                        <img
+                           src="{{ asset('images/profilePicture/' ~ accounts.photoName) }}"
+                             alt="">
+                    </div>
+                    <h3 class="align-middle userPseudo">{{ accounts.pseudo | capitalize }}</h3>
+                    <p class="voir align-bottom">
+                        <a id="nono" href="{{ path('detail', {'id': accounts.id}) }}" title="{{ accounts.pseudo }}">Voir le profil</a>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

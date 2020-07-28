@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+
+{% block accueilCss %}
+<link rel="stylesheet" href="{{ asset('CSS/accueil.css') }}">
+{% endblock %}
+
+{% block title %} {{ parent() }} Accueil!{% endblock %}
+
+{% block main %}
+    {% for label, messages in app.flashes(['success', 'warning', 'danger']) %}
+        {% for message in messages %}
+            <p class="alert-{{ label }}">{{ message }}</p>
+        {% endfor %}
+    {% endfor %}
+    <div class="content-recherche">
+    <h2>Filtrer les sorties</h2>
+
+    {{ form_start(accueilForm) }}
+
+        <div class="row">
+
+            <div class="col-sm-12 col-lg-7">
+
+                <div class="form-group row ">
+                    {{ form_label(accueilForm.campus) }}
+                    <div class="col-sm-6">
+                        {{ form_widget(accueilForm.campus) }}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputRecherche" class="col-sm-3 col-form-label col-form-label-sm">Le nom de la sortie contient :</label>
+                    <div class="col-3">
+                        <input type="text" class="form-control form-control-sm" id="inputRecherche" name="inputRecherche" placeholder="Recherche">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDateDebut" class="col-3 col-form-label col-form-label-sm">Entre :</label>
+                    <div class="col-3">
+                        <input type="date" class="form-control form-control-sm" id="inputDateDebut" name="inputDateDebut">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDateFin" class="col-3 col-form-label col-form-label-sm">Et :</label>
+                    <div class="col-3">
+                        <input type="date" class="form-control form-control-sm" id="inputDateFin" name="inputDateFin">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12 col-lg-5 my-auto">
+                <div class="form-check">
+                    {{ form_widget(accueilForm.organisateur) }}
+                    {{ form_label(accueilForm.organisateur) }}
+                </div>
+                <div class="form-check">
+                    {{ form_widget(accueilForm.inscrit) }}
+                    {{ form_label(accueilForm.inscrit) }}
+
+                </div>
+                <div class="form-check">
+                    {{ form_widget(accueilForm.nonInscrit) }}
+                    {{ form_label(accueilForm.nonInscrit) }}
+                </div>
+                <div class="form-check">
+                    {{ form_widget(accueilForm.sortiesPassees) }}
+                    {{ form_label(accueilForm.sortiesPassees) }}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="col-12 text-center btn-rechercher">
+                    <button type="submit" class="btn btn-orange">Rechercher</button>
+            </div>
+        </div>
+    {{ form_end(accueilForm) }}
+
+    <div>
+        <table class="table table-striped">
+
+            <thead>
+            <tr>
+                <th scope="col">Nom de la sortie</th>
+                <th scope="col">Date</th>
+                <th scope="col">Clôture</th>
+                <th scope="col">inscrits/places</th>
+                <th scope="col">Etat</th>
+                <th scope="col">Inscrit</th>
+                <th scope="col">Organisateur</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for sortie in sorties %}
+                {% if ((sortie.etat.id == 1 and sortie.organisateur == app.user) or app.user.roles == ["ROLE_ADMIN"] ) or sortie.etat.id == 2 or sortie.etat.id == 3 or sortie.etat.id == 4 or sortie.etat.id == 5 %}
+                    <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.datedebut|date("d/m/Y") }}</td>
+                    <td>{{ sortie.datecloture|date("d/m/Y") }}</td>
+                    <td> {{ sortie.sortieUser.count }} / {{ sortie.nbinscriptionsmax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>
+                        {% for participant in inscriptions %}
+                            {% if (participant.user == app.user) and (participant.sortie == sortie) %}
+                                X
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ path('detail', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.prenom|capitalize }} {{ sortie.organisateur.nom|first|capitalize }}
+                            .</a></td>
+
+
+                    {# ACTIONS #}
+
+                    {# si l'user n'a pas un des 3 roles #}
+                    {% if (app.user.roles == ["ROLE_USER"]) %}
+                        <td><a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a></td>
+                    {% else %}
+
+                        {# Si la sortie est créée mais pas publier , seul l'orga et l'admin peuvent la voir #}
+                        {% if (sortie.etat.id == 1 and sortie.organisateur == app.user) or (sortie.etat.id == 1 and app.user.roles == ["ROLE_ADMIN"]) %}
+                            <td>
+                                {% if app.user.roles == ["ROLE_ADMIN"] %}
+                                    <a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a> -
+                                {% endif %}
+                                <a href="{{ path('modification_sortie', {'id': sortie.id}) }}">Modifier</a> -
+                                <a href="{{ path('publier', {'id': sortie.id}) }}">Publier</a>
+                            </td>
+                        {% endif %}
+
+                        {# Si la sortie est publiée et que l'orga est l'user #}
+                        {% if (sortie.etat.id == 2 and sortie.organisateur == app.user) %}
+                            <td><a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a>
+                                - <a href="{{ path('annulation_sortie', {'id': sortie.id}) }}">Annuler</a></td>
+                        {% endif %}
+
+                        {# Si la sortie est publiée et que l'user est participant ou admin #}
+
+                            {% if sortie.etat.id == 2 and sortie.organisateur != app.user %}
+                                <td><a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a>
+                                {% set present = false %}
+                                {% if inscriptions is not empty %}
+                                    {% set present = false %}
+                                    {% for participant in inscriptions if not present %}
+                                        {% if (participant.user == app.user) and (participant.sortie == sortie) %}
+                                            - <a href="{{ path('desister', {'id': sortie.id}) }}">Se desinscrire</a>
+                                            {% set present = true %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if present == false and sortie.sortieUser.count < sortie.nbinscriptionsmax  %}
+                                        - <a href="{{ path('inscrire', {'id': sortie.id}) }}">S'inscrire</a>
+                                    {% endif %}
+                                {% elseif sortie.sortieUser.count < sortie.nbinscriptionsmax and present == false %}
+                                    - <a href="{{ path('inscrire', {'id': sortie.id}) }}">S'inscrire</a>
+                                {% endif %}
+                                </td>
+
+                            {% endif %}
+
+                        {% if sortie.etat.id == 3 %}
+                            <td><a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a>
+                            {% for participant in inscriptions %}
+                                {% if (participant.user == app.user) and (participant.sortie == sortie) %}
+                                    - <a href="{{ path('desister', {'id': sortie.id}) }}">Se désister</a>
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if sortie.etat.id == 4 or sortie.etat.id == 5 %}
+                            <td><a href="{{ path('affichage_sortie', {'id': sortie.id}) }}">Afficher</a></td>
+                        {% endif %}
+
+                        {#                        {% endif %}#}
+
+
+                        </tr>
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+
+            </tbody>
+
+            <tfoot>
+            <tr>
+                {% if app.user.roles == ["ROLE_ORGANISATEUR"] or app.user.roles == ["ROLE_ADMIN"] %}
+                    <td><a href="{{ path('creation_sortie') }}">
+                            <button type="submit" class="btn btn-orange mt-3">Créer une sortie</button>
+                        </a></td>
+                {% endif %}
+            </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+{% endblock %}

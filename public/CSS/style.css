@@ -1,0 +1,99 @@
+/* couleur dominante : #4A00E0
+   couleur secondaire : #e36414
+   couleur terciaire : white
+ */
+
+body{
+    font-family: 'Montserrat', sans-serif;
+    background: #4A00E0;  /* fallback for old browsers */
+}
+
+hr{
+    border-top: 1px solid white;
+}
+
+
+.navbarSortir {
+    background-color: #4A00E0;
+    color: white;
+}
+
+#wrapper {
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    z-index: 9999;
+    background-color: #4A00E0;
+    color: white;
+    min-height: 100vh;
+    margin-left: -15rem;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+}
+
+.sidebar-heading{
+    font-size: 24px;
+    font-weight: 700;
+    padding: 20px;
+}
+
+.navbar-nav{
+    display: inline-block;
+    width: 150px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgb(255, 255, 255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-nav .active > .nav-link,
+.navbar-light:hover .navbar-nav:hover .nav-link:hover
+{
+    color: white;
+}
+
+#sidebar-wrapper a{
+    color: white;
+}
+
+#sidebar-wrapper li{
+    margin-bottom: 16px;
+}
+
+#sidebar-wrapper .list-group {
+    width: 12rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+    background-color: white;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 992px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+
+    #sidebar-wrapper hr{
+        border-top: 1px solid rgba(255, 255, 255, 1);
+    }
+}

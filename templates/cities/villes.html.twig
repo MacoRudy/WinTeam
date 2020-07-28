@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Les villes {% endblock %}
+
+{% block campusVilleCss %}
+    <link rel="stylesheet" href="{{ asset('CSS/campusVille.css') }}">
+{% endblock %}
+
+{% block main %}
+
+<h1 class="text-center mt-5">Gérer les villes</h1>
+
+    <div class="row">
+
+        <div class="content-recherche">
+            <h2>Filtrer les villes</h2>
+
+            <form method="get" action="villes.html.twig">
+                <div class="form-group row">
+                    <label class="col-4 my-auto">Le nom contient :</label>
+                    <div class="col-4 my-auto"><input class="form-control" type="text" placeholder="Ville"></div>
+                    <div class="col-4 "><button type="submit" class="btn btn-orange">Rechercher</button></div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div>
+        <table class="mx-auto table table-striped">
+
+            <thead>
+                <tr>
+                    <th scope="col">Ville</th>
+                    <th scope="col">Code postal</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for ville in villes %}
+                <tr>
+                    <td>{{ ville.getNomVille() }}</td>
+                    <td>{{ ville.getCodePostal() }}</td>
+                    <td><a href="">Modifier</a> - <a href="">Supprimer</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td><input name="ville" class="form-control" type="text" placeholder="Nouvelle ville"></td>
+                    <td><input name="campus" class="form-control" type="text" placeholder="Nouveau code codal"></td>
+                    <td><button type="submit" class="btn btn-orange mb-2">Ajouter</button></td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+{% endblock %}

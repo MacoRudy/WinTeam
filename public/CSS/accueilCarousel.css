@@ -1,0 +1,26 @@
+/*stylisation carrousel*/
+#prez {
+    text-align: center;
+    color: #4A00E0;
+    font-family: Montserrat;
+    margin-bottom: 0;
+    line-height: 10vh;
+    height: 10vh;
+    font-size: 2em;
+}
+
+.carousel-inner {
+    height: 90vh;
+}
+
+.container-fluid {
+    padding: 0px
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    width: 56px;
+    height: 56px;
+    background-color: #fc4a1a;
+    background-size: auto;
+    border-radius: 40px;
+}
